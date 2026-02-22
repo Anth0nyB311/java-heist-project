@@ -1,15 +1,15 @@
 package game;
+
 import game.environment.environmentManager;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 public class newGame {
 
     private JFrame frame;
-    private gamePanel panel;            
-    private javax.swing.Timer timer;
-    private game.environment.environmentManager environment;
-
+    private gamePanel panel;
+    private environmentManager environment;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -22,30 +22,19 @@ public class newGame {
         frame = new JFrame("CCTV Heist");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         environment = new environmentManager();
-        panel = new gamePanel(environment);
+        panel = new gamePanel(environment, this);
         frame.setContentPane(panel);
-        frame.setSize(800 + 16, 600 + 39);  // extra for borders
+        frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
-        startGameLoop();
+        environment.setView(panel);
+        environment.start(); // City Engine physics loop
     }
 
-
-    private void startGameLoop() {
-        int fps = 60;
-        int delay = 1000 / fps;
-        timer = new javax.swing.Timer(delay, e -> {
-            updateGame();
-            panel.repaint();
-        });
-        timer.start();
-    }
-
-    private void updateGame() {
-        if (environment != null) {
-            environment.update();
-        }
+    public void restartGame() {
+        frame.dispose(); // close window
+        createShowWindow(); // make a new environment
     }
 
 }
